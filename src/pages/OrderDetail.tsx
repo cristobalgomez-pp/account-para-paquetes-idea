@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { InvoiceDialog, BillingAddress } from "@/components/InvoiceDialog";
 import { RebuyDialog } from "@/components/RebuyDialog";
 import { SubscriptionDialog } from "@/components/SubscriptionDialog";
+import { TrackingDialog } from "@/components/TrackingDialog";
 
 // Demo billing addresses (simulating user's saved addresses)
 const initialBillingAddresses: BillingAddress[] = [
@@ -309,6 +310,7 @@ const OrderDetail = () => {
   const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
   const [rebuyDialogOpen, setRebuyDialogOpen] = useState(false);
   const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false);
+  const [trackingDialogOpen, setTrackingDialogOpen] = useState(false);
 
   const handleInvoice = () => {
     // Check if auto invoicing is enabled
@@ -361,7 +363,7 @@ const OrderDetail = () => {
 
   const handleTrackOrder = () => {
     if (order.trackingNumber) {
-      toast.info(`Rastreando envío: ${order.trackingNumber}`);
+      setTrackingDialogOpen(true);
     }
   };
 
@@ -568,6 +570,16 @@ const OrderDetail = () => {
           orderNumber={order.orderNumber}
           items={order.items}
         />
+
+        {order.trackingNumber && (
+          <TrackingDialog
+            open={trackingDialogOpen}
+            onOpenChange={setTrackingDialogOpen}
+            orderNumber={order.orderNumber}
+            trackingNumber={order.trackingNumber}
+            shippingStatus={order.shippingStatus}
+          />
+        )}
       </div>
     </div>
   );
