@@ -11,6 +11,7 @@ import Account from "./pages/Account";
 import Billing from "./pages/Billing";
 import Favorites from "./pages/Favorites";
 import Subscriptions from "./pages/Subscriptions";
+import Support from "./pages/Support";
 import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/billing" element={<Billing />} />
             <Route path="/favorites" element={<Favorites />} />
             <Route path="/subscriptions" element={<Subscriptions />} />
+            <Route path="/support" element={<Support />} />
             <Route path="/analytics" element={<Analytics />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
