@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { InvoiceDialog, BillingAddress } from "@/components/InvoiceDialog";
 import { RebuyDialog } from "@/components/RebuyDialog";
+import { SubscriptionDialog } from "@/components/SubscriptionDialog";
 
 // Demo billing addresses (simulating user's saved addresses)
 const initialBillingAddresses: BillingAddress[] = [
@@ -307,6 +308,7 @@ const OrderDetail = () => {
   const [billingAddresses, setBillingAddresses] = useState<BillingAddress[]>(initialBillingAddresses);
   const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
   const [rebuyDialogOpen, setRebuyDialogOpen] = useState(false);
+  const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false);
 
   const handleInvoice = () => {
     // Check if auto invoicing is enabled
@@ -341,7 +343,7 @@ const OrderDetail = () => {
   };
 
   const handleSubscribe = () => {
-    toast.info("Configurando suscripción recurrente...");
+    setSubscriptionDialogOpen(true);
   };
 
   const handleShare = () => {
@@ -558,6 +560,13 @@ const OrderDetail = () => {
           orderNumber={order.orderNumber}
           items={order.items}
           onSubscribe={handleSubscribe}
+        />
+
+        <SubscriptionDialog
+          open={subscriptionDialogOpen}
+          onOpenChange={setSubscriptionDialogOpen}
+          orderNumber={order.orderNumber}
+          items={order.items}
         />
       </div>
     </div>
