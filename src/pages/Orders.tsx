@@ -1,5 +1,5 @@
 import { Package, ArrowLeft, MoreHorizontal, FileText, Headphones, Eye, ReceiptText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -282,9 +282,11 @@ const Orders = () => {
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleViewDetails(order.orderNumber)}>
-                          <Eye className="w-4 h-4 mr-2" />
-                          Ver detalles
+                        <DropdownMenuItem asChild>
+                          <Link to={`/orders/${order.orderNumber.replace('#', '')}`}>
+                            <Eye className="w-4 h-4 mr-2" />
+                            Ver detalles
+                          </Link>
                         </DropdownMenuItem>
                         {order.invoiceStatus === "invoiced" && (
                           <DropdownMenuItem onClick={() => toast.info("Descargando factura...")}>
