@@ -46,6 +46,12 @@ All colors MUST be HSL.
     --subscriptions: 31 97% 50%;
     --analytics: 174 84% 38%;
 
+    /* Status colors */
+    --status-success: 142 71% 45%;
+    --status-warning: 31 97% 50%;
+    --status-pending: 221 83% 53%;
+    --status-info: 199 89% 48%;
+
     /* Shadows */
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.05), 0 1px 2px -1px hsl(0 0% 0% / 0.05);
     --shadow-card-hover: 0 10px 25px -5px hsl(221 83% 53% / 0.1), 0 8px 10px -6px hsl(221 83% 53% / 0.08);
