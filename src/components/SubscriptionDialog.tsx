@@ -14,6 +14,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { useSubscriptions, Subscription, SubscriptionProduct } from "@/contexts/SubscriptionsContext";
 
 interface OrderItem {
   name: string;
@@ -50,12 +51,30 @@ const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
+// Helper to calculate next delivery date based on frequency
+const calculateNextDelivery = (frequency: string): string => {
+  const now = new Date();
+  const daysMap: Record<string, number> = {
+    daily: 1,
+    weekly: 7,
+    biweekly: 15,
+    monthly: 30,
+    bimonthly: 60,
+    quarterly: 90,
+    semiannual: 180,
+  };
+  const days = daysMap[frequency] || 30;
+  now.setDate(now.getDate() + days);
+  return now.toISOString().split("T")[0];
+};
+
 export function SubscriptionDialog({
   open,
   onOpenChange,
   orderNumber,
   items,
 }: SubscriptionDialogProps) {
+  const { addSubscription } = useSubscriptions();
   const [subscriptionItems, setSubscriptionItems] = useState<SubscriptionItem[]>(
     items.map((item) => ({ ...item, subscriptionQuantity: item.quantity }))
   );
@@ -92,6 +111,26 @@ export function SubscriptionDialog({
       toast.error("Debes seleccionar al menos un producto para suscribirte");
       return;
     }
+
+    // Create new subscription
+    const newSubscription: Subscription = {
+      id: `sub-${Date.now()}`,
+      name: `Orden ${orderNumber}`,
+      frequency,
+      status: "active",
+      nextDelivery: calculateNextDelivery(frequency),
+      createdAt: new Date().toISOString().split("T")[0],
+      products: activeItems.map((item, index): SubscriptionProduct => ({
+        id: `prod-${Date.now()}-${index}`,
+        name: item.name,
+        sku: `SKU-${index + 1}`,
+        price: item.unitPrice,
+        quantity: item.subscriptionQuantity,
+        image: item.image,
+      })),
+    };
+
+    addSubscription(newSubscription);
 
     const frequencyLabel = FREQUENCY_OPTIONS.find((f) => f.value === frequency)?.label;
     toast.success(
