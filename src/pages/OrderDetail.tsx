@@ -23,6 +23,7 @@ import { InvoiceDialog, BillingAddress } from "@/components/InvoiceDialog";
 import { RebuyDialog } from "@/components/RebuyDialog";
 import { SubscriptionDialog } from "@/components/SubscriptionDialog";
 import { TrackingDialog } from "@/components/TrackingDialog";
+import { SupportTicketDialog } from "@/components/SupportTicketDialog";
 
 // Demo billing addresses (simulating user's saved addresses)
 const initialBillingAddresses: BillingAddress[] = [
@@ -311,6 +312,7 @@ const OrderDetail = () => {
   const [rebuyDialogOpen, setRebuyDialogOpen] = useState(false);
   const [subscriptionDialogOpen, setSubscriptionDialogOpen] = useState(false);
   const [trackingDialogOpen, setTrackingDialogOpen] = useState(false);
+  const [supportDialogOpen, setSupportDialogOpen] = useState(false);
 
   const handleInvoice = () => {
     // Check if auto invoicing is enabled
@@ -337,7 +339,7 @@ const OrderDetail = () => {
   };
 
   const handleSupport = () => {
-    toast.info(`Creando ticket de soporte para ${order.orderNumber}`);
+    setSupportDialogOpen(true);
   };
 
   const handleRebuy = () => {
@@ -580,6 +582,12 @@ const OrderDetail = () => {
             shippingStatus={order.shippingStatus}
           />
         )}
+
+        <SupportTicketDialog
+          open={supportDialogOpen}
+          onOpenChange={setSupportDialogOpen}
+          orderNumber={order.orderNumber}
+        />
       </div>
     </div>
   );
