@@ -20,6 +20,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { InvoiceDialog, BillingAddress } from "@/components/InvoiceDialog";
+import { RebuyDialog } from "@/components/RebuyDialog";
 
 // Demo billing addresses (simulating user's saved addresses)
 const initialBillingAddresses: BillingAddress[] = [
@@ -305,6 +306,7 @@ const OrderDetail = () => {
 
   const [billingAddresses, setBillingAddresses] = useState<BillingAddress[]>(initialBillingAddresses);
   const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
+  const [rebuyDialogOpen, setRebuyDialogOpen] = useState(false);
 
   const handleInvoice = () => {
     // Check if auto invoicing is enabled
@@ -335,7 +337,7 @@ const OrderDetail = () => {
   };
 
   const handleRebuy = () => {
-    toast.success("Artículos agregados al carrito");
+    setRebuyDialogOpen(true);
   };
 
   const handleSubscribe = () => {
@@ -548,6 +550,14 @@ const OrderDetail = () => {
           billingAddresses={billingAddresses}
           onAddAddress={handleAddBillingAddress}
           onInvoice={handleConfirmInvoice}
+        />
+
+        <RebuyDialog
+          open={rebuyDialogOpen}
+          onOpenChange={setRebuyDialogOpen}
+          orderNumber={order.orderNumber}
+          items={order.items}
+          onSubscribe={handleSubscribe}
         />
       </div>
     </div>
