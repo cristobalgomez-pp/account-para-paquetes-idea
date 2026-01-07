@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { CalendarClock, Plus, Minus, Info } from "lucide-react";
+import { useState, useEffect } from "react";
+import { CalendarClock, Plus, Minus, Info, Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import { useSubscriptions, Subscription, SubscriptionProduct } from "@/contexts/SubscriptionsContext";
@@ -79,7 +80,13 @@ export function SubscriptionDialog({
     items.map((item) => ({ ...item, subscriptionQuantity: item.quantity }))
   );
   const [frequency, setFrequency] = useState("monthly");
+  const [subscriptionName, setSubscriptionName] = useState(`Orden ${orderNumber}`);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+
+  // Update default name when orderNumber changes
+  useEffect(() => {
+    setSubscriptionName(`Orden ${orderNumber}`);
+  }, [orderNumber]);
 
   const updateQuantity = (index: number, delta: number) => {
     setSubscriptionItems((prev) =>
@@ -115,7 +122,7 @@ export function SubscriptionDialog({
     // Create new subscription
     const newSubscription: Subscription = {
       id: `sub-${Date.now()}`,
-      name: `Orden ${orderNumber}`,
+      name: subscriptionName.trim() || `Orden ${orderNumber}`,
       frequency,
       status: "active",
       nextDelivery: calculateNextDelivery(frequency),
@@ -149,6 +156,7 @@ export function SubscriptionDialog({
         items.map((item) => ({ ...item, subscriptionQuantity: item.quantity }))
       );
       setFrequency("monthly");
+      setSubscriptionName(`Orden ${orderNumber}`);
       setAcceptedTerms(false);
     }
     onOpenChange(newOpen);
@@ -162,14 +170,32 @@ export function SubscriptionDialog({
             <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
               <CalendarClock className="w-5 h-5 text-primary" />
             </div>
-            <div>
-              <DialogTitle>Suscribirse a la Orden {orderNumber}</DialogTitle>
+            <div className="flex-1">
+              <DialogTitle className="sr-only">Crear suscripción</DialogTitle>
               <DialogDescription>
                 Recibe estos productos de forma automática en el intervalo que prefieras
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
+
+        {/* Subscription Name */}
+        <div className="space-y-2">
+          <Label htmlFor="subscription-name">Nombre de la suscripción</Label>
+          <div className="relative">
+            <Input
+              id="subscription-name"
+              value={subscriptionName}
+              onChange={(e) => setSubscriptionName(e.target.value)}
+              placeholder="Ej: Suministros mensuales"
+              className="pr-8"
+            />
+            <Pencil className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Este nombre te ayudará a identificar la suscripción
+          </p>
+        </div>
 
         {/* Frequency Selection */}
         <div className="space-y-2">
