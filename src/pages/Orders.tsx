@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Package, ArrowLeft, MoreHorizontal, FileText, Headphones, Eye, ReceiptText } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,6 +25,29 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { toast } from "sonner";
+import { InvoiceDialog, BillingAddress } from "@/components/InvoiceDialog";
+import { SupportTicketDialog } from "@/components/SupportTicketDialog";
+
+// Demo billing addresses (shared state simulation)
+const initialBillingAddresses: BillingAddress[] = [
+  {
+    id: "1",
+    rfc: "ABC123456789",
+    razonSocial: "Empresa Demo S.A. de C.V.",
+    usoCfdi: "G03",
+    regimenFiscal: "601",
+    email: "facturacion@empresademo.com",
+    codigoPostal: "06600",
+    calle: "Av. Reforma",
+    numeroExterior: "222",
+    numeroInterior: "Piso 10",
+    colonia: "Juárez",
+    municipio: "Cuauhtémoc",
+    estado: "CMX",
+    pais: "México",
+    isDefault: true,
+  },
+];
 
 type PaymentStatus = "paid" | "pending" | "failed";
 type ShippingStatus = "delivered" | "shipped" | "processing" | "pending";
@@ -159,12 +183,30 @@ const getInvoiceStatusBadge = (status: InvoiceStatus) => {
 };
 
 const Orders = () => {
+  const [billingAddresses, setBillingAddresses] = useState<BillingAddress[]>(initialBillingAddresses);
+  const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
+  const [supportDialogOpen, setSupportDialogOpen] = useState(false);
+  const [selectedOrderNumber, setSelectedOrderNumber] = useState<string>("");
+
   const handleInvoice = (orderNumber: string) => {
-    toast.success(`Iniciando proceso de facturación para ${orderNumber}`);
+    setSelectedOrderNumber(orderNumber);
+    setInvoiceDialogOpen(true);
+  };
+
+  const handleAddBillingAddress = (address: BillingAddress) => {
+    setBillingAddresses(prev => [...prev, address]);
+  };
+
+  const handleConfirmInvoice = (addressId: string) => {
+    const address = billingAddresses.find(a => a.id === addressId);
+    if (address) {
+      console.log(`Facturando orden ${selectedOrderNumber} a:`, address);
+    }
   };
 
   const handleSupport = (orderNumber: string) => {
-    toast.info(`Creando ticket de soporte para ${orderNumber}`);
+    setSelectedOrderNumber(orderNumber);
+    setSupportDialogOpen(true);
   };
 
   const handleViewDetails = (orderNumber: string) => {
@@ -307,6 +349,23 @@ const Orders = () => {
             </TableBody>
           </Table>
         </div>
+
+        {/* Invoice Dialog */}
+        <InvoiceDialog
+          open={invoiceDialogOpen}
+          onOpenChange={setInvoiceDialogOpen}
+          orderNumber={selectedOrderNumber}
+          billingAddresses={billingAddresses}
+          onAddAddress={handleAddBillingAddress}
+          onInvoice={handleConfirmInvoice}
+        />
+
+        {/* Support Ticket Dialog */}
+        <SupportTicketDialog
+          open={supportDialogOpen}
+          onOpenChange={setSupportDialogOpen}
+          orderNumber={selectedOrderNumber}
+        />
       </div>
     </div>
   );
