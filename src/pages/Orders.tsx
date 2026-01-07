@@ -209,7 +209,12 @@ const Orders = () => {
                 <TableRow key={order.id}>
                   <TableCell>
                     <div>
-                      <span className="font-semibold text-foreground">{order.orderNumber}</span>
+                      <Link 
+                        to={`/orders/${order.orderNumber.replace('#', '')}`}
+                        className="font-semibold text-primary hover:underline"
+                      >
+                        {order.orderNumber}
+                      </Link>
                       <HoverCard openDelay={200} closeDelay={100}>
                         <HoverCardTrigger asChild>
                           <p className="text-xs text-muted-foreground cursor-pointer hover:text-primary transition-colors underline decoration-dashed underline-offset-2">
