@@ -64,6 +64,11 @@ export default {
         favorites: "hsl(var(--favorites))",
         subscriptions: "hsl(var(--subscriptions))",
         analytics: "hsl(var(--analytics))",
+        // Status colors
+        "status-success": "hsl(var(--status-success))",
+        "status-warning": "hsl(var(--status-warning))",
+        "status-pending": "hsl(var(--status-pending))",
+        "status-info": "hsl(var(--status-info))",
       },
       borderRadius: {
         lg: "var(--radius)",
