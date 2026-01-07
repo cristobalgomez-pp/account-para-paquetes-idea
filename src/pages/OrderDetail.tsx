@@ -23,7 +23,7 @@ import { InvoiceDialog, BillingAddress } from "@/components/InvoiceDialog";
 import { RebuyDialog } from "@/components/RebuyDialog";
 import { SubscriptionDialog } from "@/components/SubscriptionDialog";
 import { TrackingDialog } from "@/components/TrackingDialog";
-import { SupportTicketDialog } from "@/components/SupportTicketDialog";
+import { SupportTicketDialog, SupportTicket } from "@/components/SupportTicketDialog";
 
 // Demo billing addresses (simulating user's saved addresses)
 const initialBillingAddresses: BillingAddress[] = [
@@ -81,6 +81,7 @@ interface OrderDetail {
     last4: string;
   };
   trackingNumber?: string;
+  supportTicket?: SupportTicket;
 }
 
 const ordersData: Record<string, OrderDetail> = {
@@ -113,6 +114,40 @@ const ordersData: Record<string, OrderDetail> = {
       last4: "4242",
     },
     trackingNumber: "MX123456789",
+    supportTicket: {
+      ticketNumber: "TKT-847291",
+      problemType: "defective_product",
+      status: "in_progress",
+      createdAt: "2026-01-06",
+      events: [
+        {
+          id: "1",
+          date: "06 Ene 2026",
+          time: "10:30",
+          status: "created",
+          title: "Ticket creado",
+          description: "El cliente reportó un problema con el producto recibido.",
+        },
+        {
+          id: "2",
+          date: "06 Ene 2026",
+          time: "11:45",
+          status: "in_review",
+          title: "En revisión",
+          description: "Tu caso ha sido asignado a un agente de soporte.",
+          agent: "María González",
+        },
+        {
+          id: "3",
+          date: "06 Ene 2026",
+          time: "14:20",
+          status: "in_progress",
+          title: "En proceso",
+          description: "Estamos coordinando el envío de un producto de reemplazo.",
+          agent: "María González",
+        },
+      ],
+    },
   },
   "1002": {
     id: "2",
@@ -587,6 +622,7 @@ const OrderDetail = () => {
           open={supportDialogOpen}
           onOpenChange={setSupportDialogOpen}
           orderNumber={order.orderNumber}
+          existingTicket={order.supportTicket}
         />
       </div>
     </div>
