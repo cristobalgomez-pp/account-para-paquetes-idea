@@ -1,4 +1,4 @@
-import { RefreshCw, ArrowLeft, Pause, Play, Trash2, Plus, Minus, Calendar, Package, Edit, ChevronDown, ChevronUp } from "lucide-react";
+import { RefreshCw, ArrowLeft, Pause, Play, Trash2, Plus, Minus, Calendar, Package, Edit, ChevronDown, ChevronUp, Pencil, Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,6 +40,8 @@ const Subscriptions = () => {
     removeProduct: contextRemoveProduct,
   } = useSubscriptions();
   const [expandedSubscriptions, setExpandedSubscriptions] = useState<Set<string>>(new Set(["1"]));
+  const [editingNameId, setEditingNameId] = useState<string | null>(null);
+  const [editingNameValue, setEditingNameValue] = useState("");
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-MX", {
@@ -138,6 +140,28 @@ const Subscriptions = () => {
     contextRemoveProduct(subscriptionId, productId);
   };
 
+  const startEditingName = (subscriptionId: string, currentName: string) => {
+    setEditingNameId(subscriptionId);
+    setEditingNameValue(currentName);
+  };
+
+  const saveEditingName = () => {
+    if (editingNameId && editingNameValue.trim()) {
+      updateSubscription(editingNameId, { name: editingNameValue.trim() });
+      toast({
+        title: "Nombre actualizado",
+        description: "El nombre de la suscripción ha sido actualizado.",
+      });
+    }
+    setEditingNameId(null);
+    setEditingNameValue("");
+  };
+
+  const cancelEditingName = () => {
+    setEditingNameId(null);
+    setEditingNameValue("");
+  };
+
   const activeCount = subscriptions.filter(s => s.status === "active").length;
   const pausedCount = subscriptions.filter(s => s.status === "paused").length;
 
@@ -189,7 +213,49 @@ const Subscriptions = () => {
                           </Button>
                         </CollapsibleTrigger>
                         <div>
-                          <CardTitle className="text-lg">{subscription.name}</CardTitle>
+                          {editingNameId === subscription.id ? (
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                value={editingNameValue}
+                                onChange={(e) => setEditingNameValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") saveEditingName();
+                                  if (e.key === "Escape") cancelEditingName();
+                                }}
+                                className="text-lg font-semibold bg-background border border-input rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-ring"
+                                autoFocus
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 text-primary"
+                                onClick={saveEditingName}
+                              >
+                                <Check className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-7 w-7 text-muted-foreground"
+                                onClick={cancelEditingName}
+                              >
+                                <X className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 group">
+                              <CardTitle className="text-lg">{subscription.name}</CardTitle>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => startEditingName(subscription.id, subscription.name)}
+                              >
+                                <Pencil className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          )}
                           <div className="flex items-center gap-2 mt-1">
                             <Badge variant={subscription.status === "active" ? "default" : "secondary"}>
                               {subscription.status === "active" ? "Activa" : "Pausada"}
