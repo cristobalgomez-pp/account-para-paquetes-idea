@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useSubscriptions, SubscriptionProduct } from "@/contexts/SubscriptionsContext";
+import { CreateSubscriptionDialog } from "@/components/CreateSubscriptionDialog";
 
 const FREQUENCY_OPTIONS = [
   { value: "daily", label: "Cada día" },
@@ -42,6 +43,7 @@ const Subscriptions = () => {
   const [expandedSubscriptions, setExpandedSubscriptions] = useState<Set<string>>(new Set(["1"]));
   const [editingNameId, setEditingNameId] = useState<string | null>(null);
   const [editingNameValue, setEditingNameValue] = useState("");
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("es-MX", {
@@ -175,22 +177,32 @@ const Subscriptions = () => {
           </Button>
         </Link>
 
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-14 h-14 rounded-xl bg-subscriptions flex items-center justify-center">
-            <RefreshCw className="w-7 h-7 text-white" strokeWidth={1.8} />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-xl bg-subscriptions flex items-center justify-center">
+              <RefreshCw className="w-7 h-7 text-white" strokeWidth={1.8} />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Suscripciones</h1>
+              <p className="text-muted-foreground">
+                {subscriptions.length} suscripciones ({activeCount} activas, {pausedCount} pausadas)
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Suscripciones</h1>
-            <p className="text-muted-foreground">
-              {subscriptions.length} suscripciones ({activeCount} activas, {pausedCount} pausadas)
-            </p>
-          </div>
+          <Button onClick={() => setCreateDialogOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Nueva suscripción
+          </Button>
         </div>
 
         {subscriptions.length === 0 ? (
           <div className="bg-card rounded-xl border border-border p-8 text-center">
             <RefreshCw className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No tienes suscripciones activas</p>
+            <p className="text-muted-foreground mb-4">No tienes suscripciones activas</p>
+            <Button onClick={() => setCreateDialogOpen(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Crear tu primera suscripción
+            </Button>
           </div>
         ) : (
           <div className="space-y-4">
@@ -419,6 +431,11 @@ const Subscriptions = () => {
             ))}
           </div>
         )}
+
+        <CreateSubscriptionDialog
+          open={createDialogOpen}
+          onOpenChange={setCreateDialogOpen}
+        />
       </div>
     </div>
   );
