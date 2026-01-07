@@ -57,11 +57,22 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // Account card icon backgrounds
+        orders: "hsl(var(--orders))",
+        account: "hsl(var(--account))",
+        billing: "hsl(var(--billing))",
+        favorites: "hsl(var(--favorites))",
+        subscriptions: "hsl(var(--subscriptions))",
+        analytics: "hsl(var(--analytics))",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        card: "var(--shadow-card)",
+        "card-hover": "var(--shadow-card-hover)",
       },
       keyframes: {
         "accordion-down": {
