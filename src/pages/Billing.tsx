@@ -1,10 +1,13 @@
-import { FileText, ArrowLeft, Save } from "lucide-react";
+import { FileText, ArrowLeft, Save, Plus, Trash2, Star, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
@@ -93,6 +96,24 @@ const ESTADOS_MEXICO = [
   { value: "ZAC", label: "Zacatecas" },
 ];
 
+interface BillingAddress {
+  id: string;
+  rfc: string;
+  razonSocial: string;
+  usoCfdi: string;
+  regimenFiscal: string;
+  email: string;
+  codigoPostal: string;
+  calle: string;
+  numeroExterior: string;
+  numeroInterior: string;
+  colonia: string;
+  municipio: string;
+  estado: string;
+  pais: string;
+  isDefault: boolean;
+}
+
 interface BillingFormData {
   rfc: string;
   razonSocial: string;
@@ -109,24 +130,52 @@ interface BillingFormData {
   pais: string;
 }
 
-const Billing = () => {
-  const [formData, setFormData] = useState<BillingFormData>({
-    rfc: "",
-    razonSocial: "",
-    usoCfdi: "",
-    regimenFiscal: "",
-    email: "",
-    codigoPostal: "",
-    calle: "",
-    numeroExterior: "",
-    numeroInterior: "",
-    colonia: "",
-    municipio: "",
-    estado: "",
+// Demo billing addresses
+const initialBillingAddresses: BillingAddress[] = [
+  {
+    id: "1",
+    rfc: "ABC123456789",
+    razonSocial: "Empresa Demo S.A. de C.V.",
+    usoCfdi: "G03",
+    regimenFiscal: "601",
+    email: "facturacion@empresademo.com",
+    codigoPostal: "06600",
+    calle: "Av. Reforma",
+    numeroExterior: "222",
+    numeroInterior: "Piso 10",
+    colonia: "Juárez",
+    municipio: "Cuauhtémoc",
+    estado: "CMX",
     pais: "México",
-  });
+    isDefault: true,
+  },
+];
 
+const emptyFormData: BillingFormData = {
+  rfc: "",
+  razonSocial: "",
+  usoCfdi: "",
+  regimenFiscal: "",
+  email: "",
+  codigoPostal: "",
+  calle: "",
+  numeroExterior: "",
+  numeroInterior: "",
+  colonia: "",
+  municipio: "",
+  estado: "",
+  pais: "México",
+};
+
+const Billing = () => {
+  const [billingAddresses, setBillingAddresses] = useState<BillingAddress[]>(initialBillingAddresses);
+  const [autoInvoicing, setAutoInvoicing] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formData, setFormData] = useState<BillingFormData>(emptyFormData);
   const [errors, setErrors] = useState<Partial<Record<keyof BillingFormData, string>>>({});
+
+  const defaultAddress = billingAddresses.find(a => a.isDefault);
 
   const validateForm = (): boolean => {
     const newErrors: Partial<Record<keyof BillingFormData, string>> = {};
@@ -176,10 +225,35 @@ const Billing = () => {
     e.preventDefault();
     
     if (validateForm()) {
-      toast({
-        title: "Datos guardados",
-        description: "Los datos de facturación se han guardado correctamente.",
-      });
+      if (editingId) {
+        // Update existing address
+        setBillingAddresses(prev => prev.map(addr => 
+          addr.id === editingId 
+            ? { ...addr, ...formData }
+            : addr
+        ));
+        toast({
+          title: "Dirección actualizada",
+          description: "Los datos de facturación se han actualizado correctamente.",
+        });
+      } else {
+        // Create new address
+        const newAddress: BillingAddress = {
+          id: Date.now().toString(),
+          ...formData,
+          isDefault: billingAddresses.length === 0, // First address is default
+        };
+        setBillingAddresses(prev => [...prev, newAddress]);
+        toast({
+          title: "Dirección agregada",
+          description: "La nueva dirección de facturación se ha guardado correctamente.",
+        });
+      }
+      
+      setShowForm(false);
+      setEditingId(null);
+      setFormData(emptyFormData);
+      setErrors({});
     } else {
       toast({
         title: "Error en el formulario",
@@ -188,6 +262,82 @@ const Billing = () => {
       });
     }
   };
+
+  const handleEdit = (address: BillingAddress) => {
+    setFormData({
+      rfc: address.rfc,
+      razonSocial: address.razonSocial,
+      usoCfdi: address.usoCfdi,
+      regimenFiscal: address.regimenFiscal,
+      email: address.email,
+      codigoPostal: address.codigoPostal,
+      calle: address.calle,
+      numeroExterior: address.numeroExterior,
+      numeroInterior: address.numeroInterior,
+      colonia: address.colonia,
+      municipio: address.municipio,
+      estado: address.estado,
+      pais: address.pais,
+    });
+    setEditingId(address.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = (id: string) => {
+    const addressToDelete = billingAddresses.find(a => a.id === id);
+    setBillingAddresses(prev => {
+      const remaining = prev.filter(a => a.id !== id);
+      // If we deleted the default, make the first remaining one default
+      if (addressToDelete?.isDefault && remaining.length > 0) {
+        remaining[0].isDefault = true;
+      }
+      return remaining;
+    });
+    toast({
+      title: "Dirección eliminada",
+      description: "La dirección de facturación se ha eliminado correctamente.",
+    });
+  };
+
+  const handleSetDefault = (id: string) => {
+    setBillingAddresses(prev => prev.map(addr => ({
+      ...addr,
+      isDefault: addr.id === id,
+    })));
+    toast({
+      title: "Dirección predeterminada",
+      description: "La dirección de facturación predeterminada se ha actualizado.",
+    });
+  };
+
+  const handleCancelForm = () => {
+    setShowForm(false);
+    setEditingId(null);
+    setFormData(emptyFormData);
+    setErrors({});
+  };
+
+  const handleAutoInvoicingChange = (checked: boolean) => {
+    if (checked && !defaultAddress) {
+      toast({
+        title: "No hay dirección predeterminada",
+        description: "Agrega al menos una dirección de facturación para activar la facturación automática.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setAutoInvoicing(checked);
+    toast({
+      title: checked ? "Facturación automática activada" : "Facturación automática desactivada",
+      description: checked 
+        ? "Todas tus órdenes se facturarán automáticamente a tu dirección predeterminada."
+        : "Deberás solicitar la factura manualmente para cada orden.",
+    });
+  };
+
+  const getCfdiLabel = (value: string) => CFDI_OPTIONS.find(o => o.value === value)?.label || value;
+  const getRegimenLabel = (value: string) => REGIMEN_FISCAL_OPTIONS.find(o => o.value === value)?.label || value;
+  const getEstadoLabel = (value: string) => ESTADOS_MEXICO.find(o => o.value === value)?.label || value;
 
   return (
     <div className="min-h-screen bg-background">
@@ -205,209 +355,352 @@ const Billing = () => {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-foreground">Facturación</h1>
-            <p className="text-muted-foreground">Datos fiscales para facturar tus órdenes</p>
+            <p className="text-muted-foreground">Administra tus datos fiscales para facturar órdenes</p>
           </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Datos de Facturación</CardTitle>
-            <CardDescription>
-              Completa los campos obligatorios (*) para poder facturar tus órdenes.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Datos Fiscales */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-foreground">Datos Fiscales</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="rfc">RFC *</Label>
-                    <Input
-                      id="rfc"
-                      placeholder="XAXX010101000"
-                      value={formData.rfc}
-                      onChange={(e) => handleInputChange("rfc", e.target.value.toUpperCase())}
-                      className={errors.rfc ? "border-destructive" : ""}
-                      maxLength={13}
-                    />
-                    {errors.rfc && <p className="text-sm text-destructive">{errors.rfc}</p>}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="razonSocial">Razón Social *</Label>
-                    <Input
-                      id="razonSocial"
-                      placeholder="Nombre o Razón Social"
-                      value={formData.razonSocial}
-                      onChange={(e) => handleInputChange("razonSocial", e.target.value)}
-                      className={errors.razonSocial ? "border-destructive" : ""}
-                    />
-                    {errors.razonSocial && <p className="text-sm text-destructive">{errors.razonSocial}</p>}
-                  </div>
+        {/* Auto Invoicing Toggle */}
+        <Card className="mb-6">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-lg font-medium">Facturación Automática</h3>
+                  {autoInvoicing && defaultAddress && (
+                    <Badge className="bg-green-500 hover:bg-green-600">Activa</Badge>
+                  )}
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="usoCfdi">Uso de CFDI *</Label>
-                    <Select value={formData.usoCfdi} onValueChange={(value) => handleInputChange("usoCfdi", value)}>
-                      <SelectTrigger className={errors.usoCfdi ? "border-destructive" : ""}>
-                        <SelectValue placeholder="Seleccionar uso de CFDI" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-60">
-                        {CFDI_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.usoCfdi && <p className="text-sm text-destructive">{errors.usoCfdi}</p>}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="regimenFiscal">Régimen Fiscal *</Label>
-                    <Select value={formData.regimenFiscal} onValueChange={(value) => handleInputChange("regimenFiscal", value)}>
-                      <SelectTrigger className={errors.regimenFiscal ? "border-destructive" : ""}>
-                        <SelectValue placeholder="Seleccionar régimen fiscal" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-60">
-                        {REGIMEN_FISCAL_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {errors.regimenFiscal && <p className="text-sm text-destructive">{errors.regimenFiscal}</p>}
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Correo Electrónico *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="facturacion@ejemplo.com"
-                    value={formData.email}
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                    className={errors.email ? "border-destructive" : ""}
-                  />
-                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  {autoInvoicing && defaultAddress
+                    ? `Todas tus órdenes se facturarán a: ${defaultAddress.razonSocial}`
+                    : "Activa esta opción para facturar automáticamente todas tus órdenes a tu dirección predeterminada."
+                  }
+                </p>
               </div>
-
-              {/* Dirección Fiscal */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-medium text-foreground">Dirección Fiscal</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="codigoPostal">Código Postal *</Label>
-                    <Input
-                      id="codigoPostal"
-                      placeholder="00000"
-                      value={formData.codigoPostal}
-                      onChange={(e) => handleInputChange("codigoPostal", e.target.value.replace(/\D/g, ""))}
-                      className={errors.codigoPostal ? "border-destructive" : ""}
-                      maxLength={5}
-                    />
-                    {errors.codigoPostal && <p className="text-sm text-destructive">{errors.codigoPostal}</p>}
-                  </div>
-
-                  <div className="space-y-2 md:col-span-2">
-                    <Label htmlFor="calle">Calle</Label>
-                    <Input
-                      id="calle"
-                      placeholder="Nombre de la calle"
-                      value={formData.calle}
-                      onChange={(e) => handleInputChange("calle", e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="numeroExterior">Número Exterior</Label>
-                    <Input
-                      id="numeroExterior"
-                      placeholder="123"
-                      value={formData.numeroExterior}
-                      onChange={(e) => handleInputChange("numeroExterior", e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="numeroInterior">Número Interior</Label>
-                    <Input
-                      id="numeroInterior"
-                      placeholder="A"
-                      value={formData.numeroInterior}
-                      onChange={(e) => handleInputChange("numeroInterior", e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="colonia">Colonia</Label>
-                    <Input
-                      id="colonia"
-                      placeholder="Nombre de la colonia"
-                      value={formData.colonia}
-                      onChange={(e) => handleInputChange("colonia", e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="municipio">Municipio</Label>
-                    <Input
-                      id="municipio"
-                      placeholder="Nombre del municipio"
-                      value={formData.municipio}
-                      onChange={(e) => handleInputChange("municipio", e.target.value)}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="estado">Estado</Label>
-                    <Select value={formData.estado} onValueChange={(value) => handleInputChange("estado", value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Seleccionar estado" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-60">
-                        {ESTADOS_MEXICO.map((estado) => (
-                          <SelectItem key={estado.value} value={estado.value}>
-                            {estado.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="pais">País</Label>
-                    <Input
-                      id="pais"
-                      value={formData.pais}
-                      onChange={(e) => handleInputChange("pais", e.target.value)}
-                      disabled
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-end pt-4">
-                <Button type="submit" className="gap-2">
-                  <Save className="w-4 h-4" />
-                  Guardar datos de facturación
-                </Button>
-              </div>
-            </form>
+              <Switch
+                checked={autoInvoicing && !!defaultAddress}
+                onCheckedChange={handleAutoInvoicingChange}
+              />
+            </div>
           </CardContent>
         </Card>
+
+        {/* Billing Addresses List */}
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Direcciones de Facturación</h2>
+          {!showForm && (
+            <Button onClick={() => setShowForm(true)} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Agregar dirección
+            </Button>
+          )}
+        </div>
+
+        {billingAddresses.length === 0 && !showForm && (
+          <Card className="mb-6">
+            <CardContent className="py-12 text-center">
+              <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground mb-4">No tienes direcciones de facturación registradas</p>
+              <Button onClick={() => setShowForm(true)} className="gap-2">
+                <Plus className="w-4 h-4" />
+                Agregar primera dirección
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Existing Addresses */}
+        <div className="space-y-4 mb-6">
+          {billingAddresses.map((address) => (
+            <Card key={address.id} className={address.isDefault ? "border-primary border-2" : ""}>
+              <CardContent className="pt-6">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <h3 className="font-semibold text-lg truncate">{address.razonSocial}</h3>
+                      {address.isDefault && (
+                        <Badge variant="secondary" className="gap-1">
+                          <Star className="w-3 h-3" />
+                          Predeterminada
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-muted-foreground">
+                      <div>
+                        <span className="font-medium text-foreground">RFC:</span> {address.rfc}
+                      </div>
+                      <div>
+                        <span className="font-medium text-foreground">Email:</span> {address.email}
+                      </div>
+                      <div>
+                        <span className="font-medium text-foreground">Uso CFDI:</span> {address.usoCfdi}
+                      </div>
+                      <div>
+                        <span className="font-medium text-foreground">Régimen:</span> {address.regimenFiscal}
+                      </div>
+                      <div className="sm:col-span-2">
+                        <span className="font-medium text-foreground">Dirección:</span>{" "}
+                        {[address.calle, address.numeroExterior, address.colonia, address.codigoPostal, getEstadoLabel(address.estado)]
+                          .filter(Boolean)
+                          .join(", ")}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {!address.isDefault && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => handleSetDefault(address.id)}
+                        className="gap-1"
+                      >
+                        <Check className="w-4 h-4" />
+                        Predeterminada
+                      </Button>
+                    )}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={() => handleEdit(address)}
+                    >
+                      Editar
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="text-destructive hover:text-destructive">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>¿Eliminar dirección de facturación?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Esta acción no se puede deshacer. Se eliminará la dirección de facturación "{address.razonSocial}".
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => handleDelete(address.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Eliminar
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Add/Edit Form */}
+        {showForm && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{editingId ? "Editar Dirección de Facturación" : "Nueva Dirección de Facturación"}</CardTitle>
+              <CardDescription>
+                Completa los campos obligatorios (*) para {editingId ? "actualizar" : "agregar"} la dirección de facturación.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Datos Fiscales */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium text-foreground">Datos Fiscales</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="rfc">RFC *</Label>
+                      <Input
+                        id="rfc"
+                        placeholder="XAXX010101000"
+                        value={formData.rfc}
+                        onChange={(e) => handleInputChange("rfc", e.target.value.toUpperCase())}
+                        className={errors.rfc ? "border-destructive" : ""}
+                        maxLength={13}
+                      />
+                      {errors.rfc && <p className="text-sm text-destructive">{errors.rfc}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="razonSocial">Razón Social *</Label>
+                      <Input
+                        id="razonSocial"
+                        placeholder="Nombre o Razón Social"
+                        value={formData.razonSocial}
+                        onChange={(e) => handleInputChange("razonSocial", e.target.value)}
+                        className={errors.razonSocial ? "border-destructive" : ""}
+                      />
+                      {errors.razonSocial && <p className="text-sm text-destructive">{errors.razonSocial}</p>}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="usoCfdi">Uso de CFDI *</Label>
+                      <Select value={formData.usoCfdi} onValueChange={(value) => handleInputChange("usoCfdi", value)}>
+                        <SelectTrigger className={errors.usoCfdi ? "border-destructive" : ""}>
+                          <SelectValue placeholder="Seleccionar uso de CFDI" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {CFDI_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.usoCfdi && <p className="text-sm text-destructive">{errors.usoCfdi}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="regimenFiscal">Régimen Fiscal *</Label>
+                      <Select value={formData.regimenFiscal} onValueChange={(value) => handleInputChange("regimenFiscal", value)}>
+                        <SelectTrigger className={errors.regimenFiscal ? "border-destructive" : ""}>
+                          <SelectValue placeholder="Seleccionar régimen fiscal" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {REGIMEN_FISCAL_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      {errors.regimenFiscal && <p className="text-sm text-destructive">{errors.regimenFiscal}</p>}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Correo Electrónico *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="facturacion@ejemplo.com"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      className={errors.email ? "border-destructive" : ""}
+                    />
+                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                  </div>
+                </div>
+
+                {/* Dirección Fiscal */}
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium text-foreground">Dirección Fiscal</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="codigoPostal">Código Postal *</Label>
+                      <Input
+                        id="codigoPostal"
+                        placeholder="00000"
+                        value={formData.codigoPostal}
+                        onChange={(e) => handleInputChange("codigoPostal", e.target.value.replace(/\D/g, ""))}
+                        className={errors.codigoPostal ? "border-destructive" : ""}
+                        maxLength={5}
+                      />
+                      {errors.codigoPostal && <p className="text-sm text-destructive">{errors.codigoPostal}</p>}
+                    </div>
+
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="calle">Calle</Label>
+                      <Input
+                        id="calle"
+                        placeholder="Nombre de la calle"
+                        value={formData.calle}
+                        onChange={(e) => handleInputChange("calle", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="numeroExterior">Número Exterior</Label>
+                      <Input
+                        id="numeroExterior"
+                        placeholder="123"
+                        value={formData.numeroExterior}
+                        onChange={(e) => handleInputChange("numeroExterior", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="numeroInterior">Número Interior</Label>
+                      <Input
+                        id="numeroInterior"
+                        placeholder="A"
+                        value={formData.numeroInterior}
+                        onChange={(e) => handleInputChange("numeroInterior", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="colonia">Colonia</Label>
+                      <Input
+                        id="colonia"
+                        placeholder="Nombre de la colonia"
+                        value={formData.colonia}
+                        onChange={(e) => handleInputChange("colonia", e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="municipio">Municipio</Label>
+                      <Input
+                        id="municipio"
+                        placeholder="Nombre del municipio"
+                        value={formData.municipio}
+                        onChange={(e) => handleInputChange("municipio", e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="estado">Estado</Label>
+                      <Select value={formData.estado} onValueChange={(value) => handleInputChange("estado", value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Seleccionar estado" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {ESTADOS_MEXICO.map((estado) => (
+                            <SelectItem key={estado.value} value={estado.value}>
+                              {estado.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="pais">País</Label>
+                      <Input
+                        id="pais"
+                        value={formData.pais}
+                        onChange={(e) => handleInputChange("pais", e.target.value)}
+                        disabled
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-4">
+                  <Button type="button" variant="outline" onClick={handleCancelForm}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit" className="gap-2">
+                    <Save className="w-4 h-4" />
+                    {editingId ? "Guardar cambios" : "Agregar dirección"}
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
