@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { 
   ArrowLeft, 
   Package, 
@@ -18,6 +19,31 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { InvoiceDialog, BillingAddress } from "@/components/InvoiceDialog";
+
+// Demo billing addresses (simulating user's saved addresses)
+const initialBillingAddresses: BillingAddress[] = [
+  {
+    id: "1",
+    rfc: "ABC123456789",
+    razonSocial: "Empresa Demo S.A. de C.V.",
+    usoCfdi: "G03",
+    regimenFiscal: "601",
+    email: "facturacion@empresademo.com",
+    codigoPostal: "06600",
+    calle: "Av. Reforma",
+    numeroExterior: "222",
+    numeroInterior: "Piso 10",
+    colonia: "Juárez",
+    municipio: "Cuauhtémoc",
+    estado: "CMX",
+    pais: "México",
+    isDefault: true,
+  },
+];
+
+// Demo: Auto invoicing setting (simulating user preference)
+const AUTO_INVOICING_ENABLED = false; // Change to true to test auto-invoicing
 
 interface OrderItem {
   name: string;
@@ -277,8 +303,31 @@ const OrderDetail = () => {
     );
   }
 
+  const [billingAddresses, setBillingAddresses] = useState<BillingAddress[]>(initialBillingAddresses);
+  const [invoiceDialogOpen, setInvoiceDialogOpen] = useState(false);
+
   const handleInvoice = () => {
-    toast.success(`Iniciando proceso de facturación para ${order.orderNumber}`);
+    // Check if auto invoicing is enabled
+    if (AUTO_INVOICING_ENABLED) {
+      const defaultAddress = billingAddresses.find(a => a.isDefault);
+      if (defaultAddress) {
+        toast.success(`Orden ${order.orderNumber} facturada automáticamente a ${defaultAddress.razonSocial}`);
+        return;
+      }
+    }
+    // Show dialog for manual invoice
+    setInvoiceDialogOpen(true);
+  };
+
+  const handleAddBillingAddress = (address: BillingAddress) => {
+    setBillingAddresses(prev => [...prev, address]);
+  };
+
+  const handleConfirmInvoice = (addressId: string) => {
+    const address = billingAddresses.find(a => a.id === addressId);
+    if (address) {
+      console.log(`Facturando orden ${order.orderNumber} a:`, address);
+    }
   };
 
   const handleSupport = () => {
@@ -491,6 +540,15 @@ const OrderDetail = () => {
             </Card>
           </div>
         </div>
+
+        <InvoiceDialog
+          open={invoiceDialogOpen}
+          onOpenChange={setInvoiceDialogOpen}
+          orderNumber={order.orderNumber}
+          billingAddresses={billingAddresses}
+          onAddAddress={handleAddBillingAddress}
+          onInvoice={handleConfirmInvoice}
+        />
       </div>
     </div>
   );
