@@ -4,7 +4,8 @@ import {
   FileText, 
   Heart, 
   RefreshCw, 
-  BarChart3 
+  BarChart3,
+  Headphones
 } from "lucide-react";
 import AccountCard from "./AccountCard";
 
@@ -43,6 +44,13 @@ const accountOptions = [
     icon: RefreshCw,
     iconBgClass: "bg-subscriptions",
     path: "/subscriptions",
+  },
+  {
+    title: "Soporte",
+    description: "Consulta y gestiona tus tickets de ayuda",
+    icon: Headphones,
+    iconBgClass: "bg-support",
+    path: "/support",
   },
   {
     title: "Analytics",

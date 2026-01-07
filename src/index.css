@@ -44,6 +44,7 @@ All colors MUST be HSL.
     --billing: 142 71% 45%;
     --favorites: 346 77% 50%;
     --subscriptions: 31 97% 50%;
+    --support: 280 68% 55%;
     --analytics: 174 84% 38%;
 
     /* Status colors */
@@ -101,6 +102,7 @@ All colors MUST be HSL.
     --billing: 142 71% 45%;
     --favorites: 346 77% 50%;
     --subscriptions: 31 97% 50%;
+    --support: 280 68% 55%;
     --analytics: 174 84% 38%;
 
     --shadow-card: 0 1px 3px 0 hsl(0 0% 0% / 0.2);

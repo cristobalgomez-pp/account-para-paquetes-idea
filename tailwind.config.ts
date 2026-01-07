@@ -63,6 +63,7 @@ export default {
         billing: "hsl(var(--billing))",
         favorites: "hsl(var(--favorites))",
         subscriptions: "hsl(var(--subscriptions))",
+        support: "hsl(var(--support))",
         analytics: "hsl(var(--analytics))",
         // Status colors
         "status-success": "hsl(var(--status-success))",
