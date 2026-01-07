@@ -18,11 +18,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { toast } from "sonner";
 
 type PaymentStatus = "paid" | "pending" | "failed";
 type ShippingStatus = "delivered" | "shipped" | "processing" | "pending";
 type InvoiceStatus = "invoiced" | "pending";
+
+interface OrderItem {
+  name: string;
+  quantity: number;
+  price: string;
+}
 
 interface Order {
   id: string;
@@ -32,7 +43,7 @@ interface Order {
   paymentStatus: PaymentStatus;
   shippingStatus: ShippingStatus;
   invoiceStatus: InvoiceStatus;
-  items: number;
+  items: OrderItem[];
 }
 
 const orders: Order[] = [
@@ -44,7 +55,11 @@ const orders: Order[] = [
     paymentStatus: "paid",
     shippingStatus: "delivered",
     invoiceStatus: "invoiced",
-    items: 3,
+    items: [
+      { name: "MacBook Pro 14\"", quantity: 1, price: "$999.00" },
+      { name: "Magic Mouse", quantity: 1, price: "$129.00" },
+      { name: "USB-C Cable", quantity: 2, price: "$61.00" },
+    ],
   },
   {
     id: "2",
@@ -54,7 +69,10 @@ const orders: Order[] = [
     paymentStatus: "paid",
     shippingStatus: "shipped",
     invoiceStatus: "pending",
-    items: 2,
+    items: [
+      { name: "iPhone 15 Pro Case", quantity: 2, price: "$98.00" },
+      { name: "AirPods Pro", quantity: 1, price: "$792.50" },
+    ],
   },
   {
     id: "3",
@@ -64,7 +82,13 @@ const orders: Order[] = [
     paymentStatus: "pending",
     shippingStatus: "processing",
     invoiceStatus: "pending",
-    items: 5,
+    items: [
+      { name: "iPad Pro 12.9\"", quantity: 1, price: "$1,299.00" },
+      { name: "Apple Pencil", quantity: 1, price: "$129.00" },
+      { name: "Magic Keyboard", quantity: 1, price: "$349.00" },
+      { name: "iPad Case", quantity: 1, price: "$199.00" },
+      { name: "Screen Protector", quantity: 2, price: "$124.00" },
+    ],
   },
   {
     id: "4",
@@ -74,7 +98,9 @@ const orders: Order[] = [
     paymentStatus: "paid",
     shippingStatus: "pending",
     invoiceStatus: "pending",
-    items: 1,
+    items: [
+      { name: "Apple Watch Series 9", quantity: 1, price: "$450.00" },
+    ],
   },
   {
     id: "5",
@@ -84,7 +110,11 @@ const orders: Order[] = [
     paymentStatus: "failed",
     shippingStatus: "pending",
     invoiceStatus: "pending",
-    items: 4,
+    items: [
+      { name: "MacBook Air M3", quantity: 2, price: "$2,398.00" },
+      { name: "Magic Trackpad", quantity: 1, price: "$149.00" },
+      { name: "Thunderbolt Cable", quantity: 3, price: "$653.00" },
+    ],
   },
   {
     id: "6",
@@ -94,7 +124,10 @@ const orders: Order[] = [
     paymentStatus: "paid",
     shippingStatus: "delivered",
     invoiceStatus: "invoiced",
-    items: 2,
+    items: [
+      { name: "HomePod Mini", quantity: 2, price: "$198.00" },
+      { name: "Apple TV 4K", quantity: 1, price: "$477.25" },
+    ],
   },
 ];
 
@@ -177,7 +210,35 @@ const Orders = () => {
                   <TableCell>
                     <div>
                       <span className="font-semibold text-foreground">{order.orderNumber}</span>
-                      <p className="text-xs text-muted-foreground">{order.items} artículos</p>
+                      <HoverCard openDelay={200} closeDelay={100}>
+                        <HoverCardTrigger asChild>
+                          <p className="text-xs text-muted-foreground cursor-pointer hover:text-primary transition-colors underline decoration-dashed underline-offset-2">
+                            {order.items.length} artículos
+                          </p>
+                        </HoverCardTrigger>
+                        <HoverCardContent align="start" className="w-72">
+                          <div className="space-y-2">
+                            <h4 className="text-sm font-semibold text-foreground">
+                              Artículos en {order.orderNumber}
+                            </h4>
+                            <div className="divide-y divide-border">
+                              {order.items.map((item, index) => (
+                                <div key={index} className="flex justify-between items-center py-2 first:pt-0 last:pb-0">
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm text-foreground truncate">{item.name}</p>
+                                    <p className="text-xs text-muted-foreground">Cantidad: {item.quantity}</p>
+                                  </div>
+                                  <span className="text-sm font-medium text-foreground ml-2">{item.price}</span>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="pt-2 border-t border-border flex justify-between">
+                              <span className="text-sm font-semibold">Total</span>
+                              <span className="text-sm font-semibold">{order.total}</span>
+                            </div>
+                          </div>
+                        </HoverCardContent>
+                      </HoverCard>
                     </div>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
