@@ -14,36 +14,42 @@ const accountOptions = [
     description: "Revisa el historial y estado de tus pedidos",
     icon: Package,
     iconBgClass: "bg-orders",
+    path: "/orders",
   },
   {
     title: "Mi Cuenta",
     description: "Gestiona tu información personal y preferencias",
     icon: User,
     iconBgClass: "bg-account",
+    path: "/account",
   },
   {
     title: "Facturación",
     description: "Administra métodos de pago y facturas",
     icon: FileText,
     iconBgClass: "bg-billing",
+    path: "/billing",
   },
   {
     title: "Favoritos",
     description: "Tus productos guardados y listas de deseos",
     icon: Heart,
     iconBgClass: "bg-favorites",
+    path: "/favorites",
   },
   {
     title: "Suscripciones",
     description: "Gestiona tus planes y renovaciones",
     icon: RefreshCw,
     iconBgClass: "bg-subscriptions",
+    path: "/subscriptions",
   },
   {
     title: "Analytics",
     description: "Estadísticas de compras y actividad",
     icon: BarChart3,
     iconBgClass: "bg-analytics",
+    path: "/analytics",
   },
 ];
 
@@ -70,7 +76,7 @@ const AccountDashboard = () => {
               description={option.description}
               icon={option.icon}
               iconBgClass={option.iconBgClass}
-              onClick={() => console.log(`Navegando a ${option.title}`)}
+              path={option.path}
             />
           ))}
         </div>

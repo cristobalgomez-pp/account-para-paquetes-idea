@@ -1,4 +1,5 @@
 import { LucideIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface AccountCardProps {
@@ -6,13 +7,15 @@ interface AccountCardProps {
   description: string;
   icon: LucideIcon;
   iconBgClass: string;
-  onClick?: () => void;
+  path: string;
 }
 
-const AccountCard = ({ title, description, icon: Icon, iconBgClass, onClick }: AccountCardProps) => {
+const AccountCard = ({ title, description, icon: Icon, iconBgClass, path }: AccountCardProps) => {
+  const navigate = useNavigate();
+
   return (
     <div
-      onClick={onClick}
+      onClick={() => navigate(path)}
       className={cn(
         "group cursor-pointer rounded-xl border border-border bg-card p-6",
         "transition-all duration-300 ease-out",
