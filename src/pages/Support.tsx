@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Headphones, Clock, CheckCircle2, AlertCircle, MessageSquare, Plus, Search, Filter } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Headphones, Clock, CheckCircle2, AlertCircle, MessageSquare, Plus, Search, Filter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SupportTicketDialog, SupportTicket } from "@/components/SupportTicketDialog";
+import AccountNav from "@/components/AccountNav";
 
 // Demo data for tickets
 const demoTickets: (SupportTicket & { orderNumber: string })[] = [
@@ -213,13 +213,8 @@ const Support = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6 -ml-2">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver al inicio
-          </Button>
-        </Link>
+      <AccountNav />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">

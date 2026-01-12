@@ -1,5 +1,4 @@
-import { FileText, ArrowLeft, Save, Plus, Trash2, Star, Check } from "lucide-react";
-import { Link } from "react-router-dom";
+import { FileText, Save, Plus, Trash2, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import AccountNav from "@/components/AccountNav";
 
 const CFDI_OPTIONS = [
   { value: "G01", label: "G01 - Adquisición de mercancías" },
@@ -341,13 +341,8 @@ const Billing = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6 -ml-2">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver
-          </Button>
-        </Link>
+      <AccountNav />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <div className="flex items-center gap-4 mb-8">
           <div className="w-14 h-14 rounded-xl bg-billing flex items-center justify-center">

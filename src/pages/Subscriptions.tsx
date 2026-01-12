@@ -1,5 +1,4 @@
-import { RefreshCw, ArrowLeft, Pause, Play, Trash2, Plus, Minus, Calendar, Package, Edit, ChevronDown, ChevronUp, Pencil, Check, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { RefreshCw, Pause, Play, Trash2, Plus, Minus, Calendar, Package, Edit, ChevronDown, ChevronUp, Pencil, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useSubscriptions, SubscriptionProduct } from "@/contexts/SubscriptionsContext";
 import { CreateSubscriptionDialog } from "@/components/CreateSubscriptionDialog";
+import AccountNav from "@/components/AccountNav";
 
 const FREQUENCY_OPTIONS = [
   { value: "daily", label: "Cada día" },
@@ -169,13 +169,8 @@ const Subscriptions = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6 -ml-2">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver
-          </Button>
-        </Link>
+      <AccountNav />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div className="flex items-center gap-4">
