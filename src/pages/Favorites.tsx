@@ -1,9 +1,9 @@
-import { Heart, ArrowLeft, Plus, Minus, ShoppingCart, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Heart, Plus, Minus, ShoppingCart, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import AccountNav from "@/components/AccountNav";
 
 interface FavoriteProduct {
   id: string;
@@ -89,13 +89,8 @@ const Favorites = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link to="/">
-          <Button variant="ghost" className="mb-6 -ml-2">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Volver
-          </Button>
-        </Link>
+      <AccountNav />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         <div className="flex items-center gap-4 mb-8">
           <div className="w-14 h-14 rounded-xl bg-favorites flex items-center justify-center">
