@@ -1,0 +1,1168 @@
+{% comment %}
+  ============================================
+  SECCIÓN: MI CUENTA - Código Portable para Shopify
+  ============================================
+  
+  Instrucciones de instalación:
+  1. Copia todo este contenido
+  2. Ve a tu Admin de Shopify > Tienda Online > Temas > Editar código
+  3. Busca o crea el archivo: templates/customers/account.liquid
+  4. Pega todo el contenido y guarda
+  
+  Personalización:
+  - Modifica las variables CSS al inicio del <style> para cambiar colores
+  - Los metafields de preferencias deben configurarse en Shopify Admin
+{% endcomment %}
+
+<div class="account-page">
+  <!-- Toast Notification -->
+  <div id="toast-container"></div>
+
+  <!-- Header -->
+  <div class="account-header">
+    <div class="account-avatar" id="user-avatar">
+      {% if customer.first_name != blank and customer.last_name != blank %}
+        {{ customer.first_name | slice: 0 | upcase }}{{ customer.last_name | slice: 0 | upcase }}
+      {% else %}
+        {{ customer.email | slice: 0 | upcase }}
+      {% endif %}
+    </div>
+    <div class="account-header-info">
+      <h1 class="account-title">Mi Cuenta</h1>
+      <p class="account-subtitle">Gestiona tu información personal y preferencias</p>
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="account-tabs" role="tablist">
+    <button class="account-tab active" data-tab="profile" role="tab" aria-selected="true" aria-controls="panel-profile">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+      Perfil
+    </button>
+    <button class="account-tab" data-tab="security" role="tab" aria-selected="false" aria-controls="panel-security">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+      Seguridad
+    </button>
+    <button class="account-tab" data-tab="preferences" role="tab" aria-selected="false" aria-controls="panel-preferences">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+      Preferencias
+    </button>
+  </div>
+
+  <!-- Tab Panels -->
+  <div class="account-panels">
+    
+    <!-- Profile Panel -->
+    <div class="account-panel active" id="panel-profile" role="tabpanel" aria-labelledby="tab-profile">
+      <div class="account-card">
+        <div class="card-header">
+          <h2 class="card-title">Información Personal</h2>
+          <p class="card-description">Actualiza tu información de perfil y foto</p>
+        </div>
+        <div class="card-content">
+          <form id="profile-form" action="/account" method="post">
+            <input type="hidden" name="form_type" value="customer">
+            <input type="hidden" name="utf8" value="✓">
+            
+            <!-- Avatar Section -->
+            <div class="avatar-section">
+              <div class="avatar-upload">
+                <div class="avatar-large" id="avatar-display">
+                  {% if customer.first_name != blank and customer.last_name != blank %}
+                    {{ customer.first_name | slice: 0 | upcase }}{{ customer.last_name | slice: 0 | upcase }}
+                  {% else %}
+                    {{ customer.email | slice: 0 | upcase }}
+                  {% endif %}
+                </div>
+                <div class="avatar-actions">
+                  <label class="btn btn-outline btn-sm" for="avatar-input">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                      <polyline points="17 8 12 3 7 8"></polyline>
+                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                    Subir foto
+                  </label>
+                  <input type="file" id="avatar-input" accept="image/*" hidden>
+                  <p class="avatar-hint">JPG, PNG o GIF. Máximo 2MB</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Form Fields -->
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="first_name">Nombre</label>
+                <input 
+                  type="text" 
+                  id="first_name" 
+                  name="customer[first_name]" 
+                  class="form-input" 
+                  value="{{ customer.first_name }}"
+                  placeholder="Tu nombre"
+                >
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="last_name">Apellido</label>
+                <input 
+                  type="text" 
+                  id="last_name" 
+                  name="customer[last_name]" 
+                  class="form-input" 
+                  value="{{ customer.last_name }}"
+                  placeholder="Tu apellido"
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="email">Correo electrónico</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="customer[email]" 
+                class="form-input" 
+                value="{{ customer.email }}"
+                placeholder="tu@email.com"
+              >
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phone">Teléfono</label>
+              <input 
+                type="tel" 
+                id="phone" 
+                name="customer[phone]" 
+                class="form-input" 
+                value="{{ customer.phone }}"
+                placeholder="+52 55 1234 5678"
+              >
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                Guardar cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Panel -->
+    <div class="account-panel" id="panel-security" role="tabpanel" aria-labelledby="tab-security">
+      <div class="account-card">
+        <div class="card-header">
+          <h2 class="card-title">Cambiar Contraseña</h2>
+          <p class="card-description">Asegúrate de usar una contraseña fuerte</p>
+        </div>
+        <div class="card-content">
+          <form id="password-form" action="/account" method="post">
+            <input type="hidden" name="form_type" value="change_password">
+            <input type="hidden" name="utf8" value="✓">
+            
+            <div class="form-group">
+              <label class="form-label" for="current_password">Contraseña actual</label>
+              <div class="password-input-wrapper">
+                <input 
+                  type="password" 
+                  id="current_password" 
+                  name="customer[current_password]" 
+                  class="form-input" 
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                >
+                <button type="button" class="password-toggle" data-target="current_password">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="new_password">Nueva contraseña</label>
+              <div class="password-input-wrapper">
+                <input 
+                  type="password" 
+                  id="new_password" 
+                  name="customer[password]" 
+                  class="form-input" 
+                  placeholder="••••••••"
+                  autocomplete="new-password"
+                  minlength="8"
+                >
+                <button type="button" class="password-toggle" data-target="new_password">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <p class="form-hint">Mínimo 8 caracteres</p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="confirm_password">Confirmar contraseña</label>
+              <div class="password-input-wrapper">
+                <input 
+                  type="password" 
+                  id="confirm_password" 
+                  name="customer[password_confirmation]" 
+                  class="form-input" 
+                  placeholder="••••••••"
+                  autocomplete="new-password"
+                >
+                <button type="button" class="password-toggle" data-target="confirm_password">
+                  <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+              <p class="form-error" id="password-error" hidden>Las contraseñas no coinciden</p>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" id="change-password-btn">
+                Cambiar contraseña
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="account-card">
+        <div class="card-header">
+          <h2 class="card-title">Autenticación de dos factores</h2>
+          <p class="card-description">Añade una capa extra de seguridad a tu cuenta</p>
+        </div>
+        <div class="card-content">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-label">Habilitar 2FA</span>
+              <span class="toggle-description">Recibe un código de verificación al iniciar sesión</span>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle-2fa">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <p class="info-note">
+            <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            La autenticación de dos factores protege tu cuenta incluso si alguien obtiene tu contraseña.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preferences Panel -->
+    <div class="account-panel" id="panel-preferences" role="tabpanel" aria-labelledby="tab-preferences">
+      <div class="account-card">
+        <div class="card-header">
+          <h2 class="card-title">Idioma y Región</h2>
+          <p class="card-description">Personaliza tu experiencia</p>
+        </div>
+        <div class="card-content">
+          <div class="form-group">
+            <label class="form-label" for="language">Idioma preferido</label>
+            <div class="select-wrapper">
+              <select id="language" class="form-select">
+                <option value="es" selected>Español</option>
+                <option value="en">English</option>
+                <option value="pt">Português</option>
+                <option value="fr">Français</option>
+              </select>
+              <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="account-card">
+        <div class="card-header">
+          <h2 class="card-title">Notificaciones</h2>
+          <p class="card-description">Configura cómo quieres recibir actualizaciones</p>
+        </div>
+        <div class="card-content">
+          <div class="toggle-list">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Notificaciones por email</span>
+                <span class="toggle-description">Recibe actualizaciones en tu correo</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-email" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Notificaciones por SMS</span>
+                <span class="toggle-description">Recibe mensajes de texto importantes</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-sms">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Actualizaciones de pedidos</span>
+                <span class="toggle-description">Estado de envío y entrega</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-orders" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <span class="toggle-label">Ofertas y promociones</span>
+                <span class="toggle-description">Descuentos exclusivos y novedades</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-promos">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-primary" id="save-preferences">
+              Guardar preferencias
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ============================================
+     VARIABLES CSS - PERSONALIZA AQUÍ
+     ============================================ */
+  :root {
+    --account-primary: #2563eb;
+    --account-primary-hover: #1d4ed8;
+    --account-primary-light: #dbeafe;
+    --account-background: #f8fafc;
+    --account-surface: #ffffff;
+    --account-border: #e2e8f0;
+    --account-text: #1e293b;
+    --account-text-muted: #64748b;
+    --account-text-light: #94a3b8;
+    --account-success: #22c55e;
+    --account-error: #ef4444;
+    --account-warning: #f59e0b;
+    --account-radius: 12px;
+    --account-radius-sm: 8px;
+    --account-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --account-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --account-transition: 0.2s ease;
+  }
+
+  /* ============================================
+     RESET & BASE
+     ============================================ */
+  .account-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    color: var(--account-text);
+    line-height: 1.5;
+  }
+
+  .account-page * {
+    box-sizing: border-box;
+  }
+
+  /* ============================================
+     HEADER
+     ============================================ */
+  .account-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .account-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--account-primary), var(--account-primary-hover));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .account-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    color: var(--account-text);
+  }
+
+  .account-subtitle {
+    margin: 0;
+    color: var(--account-text-muted);
+    font-size: 0.875rem;
+  }
+
+  /* ============================================
+     TABS
+     ============================================ */
+  .account-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    background: var(--account-background);
+    padding: 0.375rem;
+    border-radius: var(--account-radius);
+    overflow-x: auto;
+  }
+
+  .account-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    background: transparent;
+    color: var(--account-text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: var(--account-radius-sm);
+    cursor: pointer;
+    transition: all var(--account-transition);
+    white-space: nowrap;
+  }
+
+  .account-tab:hover {
+    color: var(--account-text);
+    background: var(--account-surface);
+  }
+
+  .account-tab.active {
+    background: var(--account-surface);
+    color: var(--account-primary);
+    box-shadow: var(--account-shadow);
+  }
+
+  .tab-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ============================================
+     PANELS
+     ============================================ */
+  .account-panels {
+    position: relative;
+  }
+
+  .account-panel {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .account-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============================================
+     CARDS
+     ============================================ */
+  .account-card {
+    background: var(--account-surface);
+    border: 1px solid var(--account-border);
+    border-radius: var(--account-radius);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 1.5rem 1.5rem 0;
+  }
+
+  .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem 0;
+    color: var(--account-text);
+  }
+
+  .card-description {
+    margin: 0;
+    color: var(--account-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  /* ============================================
+     AVATAR SECTION
+     ============================================ */
+  .avatar-section {
+    margin-bottom: 1rem;
+  }
+
+  .avatar-upload {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--account-primary), var(--account-primary-hover));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .avatar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .avatar-hint {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--account-text-light);
+  }
+
+  /* ============================================
+     FORM ELEMENTS
+     ============================================ */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--account-text);
+  }
+
+  .form-input,
+  .form-select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--account-border);
+    border-radius: var(--account-radius-sm);
+    font-size: 0.875rem;
+    color: var(--account-text);
+    background: var(--account-surface);
+    transition: all var(--account-transition);
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    outline: none;
+    border-color: var(--account-primary);
+    box-shadow: 0 0 0 3px var(--account-primary-light);
+  }
+
+  .form-input::placeholder {
+    color: var(--account-text-light);
+  }
+
+  .form-hint {
+    margin: 0.375rem 0 0;
+    font-size: 0.75rem;
+    color: var(--account-text-muted);
+  }
+
+  .form-error {
+    margin: 0.375rem 0 0;
+    font-size: 0.75rem;
+    color: var(--account-error);
+  }
+
+  .form-actions {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--account-border);
+  }
+
+  /* Password Input Wrapper */
+  .password-input-wrapper {
+    position: relative;
+  }
+
+  .password-input-wrapper .form-input {
+    padding-right: 3rem;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: var(--account-text-muted);
+    transition: color var(--account-transition);
+  }
+
+  .password-toggle:hover {
+    color: var(--account-text);
+  }
+
+  .eye-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Select Wrapper */
+  .select-wrapper {
+    position: relative;
+  }
+
+  .form-select {
+    appearance: none;
+    padding-right: 2.5rem;
+    cursor: pointer;
+  }
+
+  .select-arrow {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    pointer-events: none;
+    color: var(--account-text-muted);
+  }
+
+  /* ============================================
+     BUTTONS
+     ============================================ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--account-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all var(--account-transition);
+  }
+
+  .btn-primary {
+    background: var(--account-primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background: var(--account-primary-hover);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--account-border);
+    color: var(--account-text);
+  }
+
+  .btn-outline:hover {
+    background: var(--account-background);
+    border-color: var(--account-text-muted);
+  }
+
+  .btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .btn-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ============================================
+     TOGGLE SWITCH
+     ============================================ */
+  .toggle-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+  }
+
+  .toggle-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .toggle-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--account-text);
+  }
+
+  .toggle-description {
+    font-size: 0.75rem;
+    color: var(--account-text-muted);
+  }
+
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--account-border);
+    border-radius: 24px;
+    transition: all var(--account-transition);
+  }
+
+  .toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: all var(--account-transition);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  .toggle-switch input:checked + .toggle-slider {
+    background: var(--account-primary);
+  }
+
+  .toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+  }
+
+  .toggle-switch input:focus + .toggle-slider {
+    box-shadow: 0 0 0 3px var(--account-primary-light);
+  }
+
+  /* ============================================
+     UTILITIES
+     ============================================ */
+  .divider {
+    height: 1px;
+    background: var(--account-border);
+    margin: 1rem 0;
+  }
+
+  .info-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--account-primary-light);
+    border-radius: var(--account-radius-sm);
+    font-size: 0.8125rem;
+    color: var(--account-primary-hover);
+  }
+
+  .info-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ============================================
+     TOAST NOTIFICATIONS
+     ============================================ */
+  #toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .toast {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: var(--account-surface);
+    border: 1px solid var(--account-border);
+    border-radius: var(--account-radius-sm);
+    box-shadow: var(--account-shadow-lg);
+    animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+    max-width: 350px;
+  }
+
+  .toast.success {
+    border-left: 4px solid var(--account-success);
+  }
+
+  .toast.error {
+    border-left: 4px solid var(--account-error);
+  }
+
+  .toast.warning {
+    border-left: 4px solid var(--account-warning);
+  }
+
+  .toast-message {
+    font-size: 0.875rem;
+    color: var(--account-text);
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media (max-width: 640px) {
+    .account-page {
+      padding: 1rem;
+    }
+
+    .account-header {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .account-tabs {
+      justify-content: stretch;
+    }
+
+    .account-tab {
+      flex: 1;
+      justify-content: center;
+      padding: 0.625rem 0.75rem;
+      font-size: 0.8125rem;
+    }
+
+    .tab-icon {
+      display: none;
+    }
+
+    .avatar-upload {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .card-header,
+    .card-content {
+      padding: 1rem;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    'use strict';
+
+    // ============================================
+    // TAB SWITCHING
+    // ============================================
+    const tabs = document.querySelectorAll('.account-tab');
+    const panels = document.querySelectorAll('.account-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.dataset.tab;
+        
+        // Update tabs
+        tabs.forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+
+        // Update panels
+        panels.forEach(panel => {
+          panel.classList.remove('active');
+        });
+        document.getElementById('panel-' + targetId).classList.add('active');
+      });
+    });
+
+    // ============================================
+    // PASSWORD VISIBILITY TOGGLE
+    // ============================================
+    const passwordToggles = document.querySelectorAll('.password-toggle');
+    
+    passwordToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const targetId = toggle.dataset.target;
+        const input = document.getElementById(targetId);
+        
+        if (input.type === 'password') {
+          input.type = 'text';
+          toggle.innerHTML = `
+            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+            </svg>
+          `;
+        } else {
+          input.type = 'password';
+          toggle.innerHTML = `
+            <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          `;
+        }
+      });
+    });
+
+    // ============================================
+    // PASSWORD VALIDATION
+    // ============================================
+    const passwordForm = document.getElementById('password-form');
+    const newPassword = document.getElementById('new_password');
+    const confirmPassword = document.getElementById('confirm_password');
+    const passwordError = document.getElementById('password-error');
+
+    if (passwordForm) {
+      passwordForm.addEventListener('submit', (e) => {
+        if (newPassword.value !== confirmPassword.value) {
+          e.preventDefault();
+          passwordError.hidden = false;
+          confirmPassword.focus();
+          showToast('Las contraseñas no coinciden', 'error');
+        } else if (newPassword.value.length < 8) {
+          e.preventDefault();
+          showToast('La contraseña debe tener al menos 8 caracteres', 'error');
+        } else {
+          passwordError.hidden = true;
+        }
+      });
+
+      // Real-time validation
+      confirmPassword.addEventListener('input', () => {
+        if (newPassword.value && confirmPassword.value) {
+          passwordError.hidden = newPassword.value === confirmPassword.value;
+        }
+      });
+    }
+
+    // ============================================
+    // PROFILE FORM SUBMIT
+    // ============================================
+    const profileForm = document.getElementById('profile-form');
+    
+    if (profileForm) {
+      profileForm.addEventListener('submit', (e) => {
+        // Shopify handles the form, but show feedback
+        setTimeout(() => {
+          showToast('Perfil actualizado correctamente', 'success');
+        }, 500);
+      });
+    }
+
+    // ============================================
+    // PREFERENCES SAVE
+    // ============================================
+    const savePreferencesBtn = document.getElementById('save-preferences');
+    
+    if (savePreferencesBtn) {
+      savePreferencesBtn.addEventListener('click', () => {
+        // Collect preferences
+        const preferences = {
+          language: document.getElementById('language').value,
+          emailNotifications: document.getElementById('toggle-email').checked,
+          smsNotifications: document.getElementById('toggle-sms').checked,
+          orderUpdates: document.getElementById('toggle-orders').checked,
+          promotions: document.getElementById('toggle-promos').checked
+        };
+
+        // Here you would save to Shopify metafields via AJAX
+        // For now, just show success message
+        console.log('Saving preferences:', preferences);
+        
+        // Simulate save
+        savePreferencesBtn.textContent = 'Guardando...';
+        savePreferencesBtn.disabled = true;
+        
+        setTimeout(() => {
+          savePreferencesBtn.textContent = 'Guardar preferencias';
+          savePreferencesBtn.disabled = false;
+          showToast('Preferencias guardadas correctamente', 'success');
+        }, 800);
+      });
+    }
+
+    // ============================================
+    // 2FA TOGGLE
+    // ============================================
+    const toggle2fa = document.getElementById('toggle-2fa');
+    
+    if (toggle2fa) {
+      toggle2fa.addEventListener('change', () => {
+        if (toggle2fa.checked) {
+          showToast('2FA activado (demo)', 'success');
+        } else {
+          showToast('2FA desactivado', 'warning');
+        }
+      });
+    }
+
+    // ============================================
+    // AVATAR UPLOAD (Preview only)
+    // ============================================
+    const avatarInput = document.getElementById('avatar-input');
+    const avatarDisplay = document.getElementById('avatar-display');
+    
+    if (avatarInput && avatarDisplay) {
+      avatarInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 2 * 1024 * 1024) {
+            showToast('La imagen no puede superar 2MB', 'error');
+            return;
+          }
+          
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            avatarDisplay.innerHTML = '';
+            avatarDisplay.style.backgroundImage = `url(${event.target.result})`;
+            avatarDisplay.style.backgroundSize = 'cover';
+            avatarDisplay.style.backgroundPosition = 'center';
+            showToast('Imagen cargada (vista previa)', 'success');
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // ============================================
+    // TOAST NOTIFICATION SYSTEM
+    // ============================================
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      
+      const icons = {
+        success: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`,
+        error: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`,
+        warning: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`
+      };
+
+      toast.innerHTML = `
+        ${icons[type]}
+        <span class="toast-message">${message}</span>
+      `;
+
+      container.appendChild(toast);
+
+      // Auto remove after 3 seconds
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    // Make showToast globally available
+    window.showToast = showToast;
+
+  })();
+</script>
