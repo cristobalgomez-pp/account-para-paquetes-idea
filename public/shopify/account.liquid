@@ -56,6 +56,13 @@
       </svg>
       Preferencias
     </button>
+    <button class="account-tab" data-tab="coupons" role="tab" aria-selected="false" aria-controls="panel-coupons">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 5H3a2 2 0 00-2 2v4a2 2 0 002 2 2 2 0 010 4 2 2 0 00-2 2v4a2 2 0 002 2h18a2 2 0 002-2v-4a2 2 0 00-2-2 2 2 0 010-4 2 2 0 002-2V7a2 2 0 00-2-2z"></path>
+        <path d="M10 5v18"></path>
+      </svg>
+      Cupones
+    </button>
   </div>
 
   <!-- Tab Panels -->
@@ -359,11 +366,274 @@
             <button type="button" class="btn btn-primary" id="save-preferences">
               Guardar preferencias
             </button>
-          </div>
         </div>
       </div>
     </div>
+
+    <!-- Coupons Panel -->
+    <div class="account-panel" id="panel-coupons" role="tabpanel" aria-labelledby="tab-coupons">
+      <!-- Active Coupons -->
+      <div class="account-card">
+        <div class="card-header">
+          <h2 class="card-title">Mis Cupones de Descuento</h2>
+          <p class="card-description">Copia el código y aplícalo en tu próxima compra</p>
+        </div>
+        <div class="card-content">
+          <div class="coupons-grid">
+            <!-- Coupon 1 - Percentage -->
+            <div class="coupon-card">
+              <div class="coupon-left">
+                <div class="coupon-discount">15%</div>
+                <div class="coupon-type">DESCUENTO</div>
+              </div>
+              <div class="coupon-right">
+                <div class="coupon-title">Descuento de Bienvenida</div>
+                <div class="coupon-description">En tu primera compra mayor a $500</div>
+                <div class="coupon-code-wrapper">
+                  <span class="coupon-code">BIENVENIDO15</span>
+                  <button class="copy-btn" data-code="BIENVENIDO15">
+                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="coupon-expiry">
+                  <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  Válido hasta 31 Ene 2026
+                </div>
+              </div>
+            </div>
+
+            <!-- Coupon 2 - Fixed Amount -->
+            <div class="coupon-card">
+              <div class="coupon-left coupon-left-secondary">
+                <div class="coupon-discount">$200</div>
+                <div class="coupon-type">DESCUENTO</div>
+              </div>
+              <div class="coupon-right">
+                <div class="coupon-title">Cupón de Cumpleaños</div>
+                <div class="coupon-description">Celebra con este descuento especial</div>
+                <div class="coupon-code-wrapper">
+                  <span class="coupon-code">CUMPLE200</span>
+                  <button class="copy-btn" data-code="CUMPLE200">
+                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="coupon-expiry">
+                  <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  Válido hasta 15 Feb 2026
+                </div>
+              </div>
+            </div>
+
+            <!-- Coupon 3 - Free Shipping -->
+            <div class="coupon-card">
+              <div class="coupon-left coupon-left-accent">
+                <div class="coupon-discount">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shipping-icon">
+                    <rect x="1" y="3" width="15" height="13"></rect>
+                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                  </svg>
+                </div>
+                <div class="coupon-type">ENVÍO GRATIS</div>
+              </div>
+              <div class="coupon-right">
+                <div class="coupon-title">Envío Gratis</div>
+                <div class="coupon-description">En compras mayores a $300</div>
+                <div class="coupon-code-wrapper">
+                  <span class="coupon-code">ENVIOGRATIS</span>
+                  <button class="copy-btn" data-code="ENVIOGRATIS">
+                    <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  </button>
+                </div>
+                <div class="coupon-expiry">
+                  <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  Sin fecha de expiración
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="info-note" style="margin-top: 1.5rem;">
+            <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            Los cupones se aplican automáticamente al ingresar el código en el checkout.
+          </p>
+        </div>
+      </div>
+
+      <!-- Limited Time Offers -->
+      <div class="account-card">
+        <div class="card-header">
+          <div class="offers-header">
+            <div>
+              <h2 class="card-title">🔥 Ofertas por Tiempo Limitado</h2>
+              <p class="card-description">Ofertas exclusivas que expiran pronto</p>
+            </div>
+            <span class="offers-badge">¡No te las pierdas!</span>
+          </div>
+        </div>
+        <div class="card-content">
+          <div class="offers-list">
+            <!-- Offer 1 -->
+            <div class="offer-item offer-urgent">
+              <div class="offer-timer" id="timer-flash-sale">
+                <svg class="timer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="timer-label">Expira en:</span>
+                <div class="countdown" data-hours="2" data-minutes="45" data-seconds="30">
+                  <span class="countdown-segment">
+                    <span class="countdown-value" id="hours-1">02</span>
+                    <span class="countdown-unit">hrs</span>
+                  </span>
+                  <span class="countdown-separator">:</span>
+                  <span class="countdown-segment">
+                    <span class="countdown-value" id="minutes-1">45</span>
+                    <span class="countdown-unit">min</span>
+                  </span>
+                  <span class="countdown-separator">:</span>
+                  <span class="countdown-segment">
+                    <span class="countdown-value" id="seconds-1">30</span>
+                    <span class="countdown-unit">seg</span>
+                  </span>
+                </div>
+              </div>
+              <div class="offer-content">
+                <div class="offer-badge">⚡ FLASH SALE</div>
+                <h3 class="offer-title">30% en toda la tienda</h3>
+                <p class="offer-description">Aprovecha este descuento exclusivo en todos los productos. ¡Solo por hoy!</p>
+                <div class="offer-actions">
+                  <div class="coupon-code-wrapper">
+                    <span class="coupon-code">FLASH30</span>
+                    <button class="copy-btn" data-code="FLASH30">
+                      <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <a href="/collections/all" class="btn btn-primary btn-sm">Comprar ahora</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Offer 2 -->
+            <div class="offer-item">
+              <div class="offer-timer" id="timer-weekend">
+                <svg class="timer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="timer-label">Termina en:</span>
+                <div class="countdown" data-hours="48" data-minutes="0" data-seconds="0">
+                  <span class="countdown-segment">
+                    <span class="countdown-value" id="hours-2">48</span>
+                    <span class="countdown-unit">hrs</span>
+                  </span>
+                  <span class="countdown-separator">:</span>
+                  <span class="countdown-segment">
+                    <span class="countdown-value" id="minutes-2">00</span>
+                    <span class="countdown-unit">min</span>
+                  </span>
+                  <span class="countdown-separator">:</span>
+                  <span class="countdown-segment">
+                    <span class="countdown-value" id="seconds-2">00</span>
+                    <span class="countdown-unit">seg</span>
+                  </span>
+                </div>
+              </div>
+              <div class="offer-content">
+                <div class="offer-badge offer-badge-secondary">🎉 FIN DE SEMANA</div>
+                <h3 class="offer-title">2x1 en productos seleccionados</h3>
+                <p class="offer-description">Compra un producto y llévate otro gratis. Aplica en la categoría de accesorios.</p>
+                <div class="offer-actions">
+                  <div class="coupon-code-wrapper">
+                    <span class="coupon-code">2X1FINDE</span>
+                    <button class="copy-btn" data-code="2X1FINDE">
+                      <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <a href="/collections/accesorios" class="btn btn-outline btn-sm">Ver productos</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Offer 3 -->
+            <div class="offer-item">
+              <div class="offer-timer" id="timer-vip">
+                <svg class="timer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="timer-label">Exclusivo hasta:</span>
+                <span class="offer-date">20 Ene 2026</span>
+              </div>
+              <div class="offer-content">
+                <div class="offer-badge offer-badge-vip">👑 CLIENTE VIP</div>
+                <h3 class="offer-title">Acceso anticipado a nueva colección + 20% OFF</h3>
+                <p class="offer-description">Como cliente VIP, tienes acceso exclusivo a nuestra nueva colección con un descuento especial.</p>
+                <div class="offer-actions">
+                  <div class="coupon-code-wrapper">
+                    <span class="coupon-code">VIP2026</span>
+                    <button class="copy-btn" data-code="VIP2026">
+                      <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                      </svg>
+                    </button>
+                  </div>
+                  <a href="/collections/nueva-coleccion" class="btn btn-outline btn-sm">Explorar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State (hidden by default, show when no coupons) -->
+      <div class="empty-coupons" style="display: none;">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M21 5H3a2 2 0 00-2 2v4a2 2 0 002 2 2 2 0 010 4 2 2 0 00-2 2v4a2 2 0 002 2h18a2 2 0 002-2v-4a2 2 0 00-2-2 2 2 0 010-4 2 2 0 002-2V7a2 2 0 00-2-2z"></path>
+          </svg>
+        </div>
+        <h3 class="empty-title">No tienes cupones activos</h3>
+        <p class="empty-description">Sigue comprando para desbloquear descuentos exclusivos</p>
+        <a href="/collections/all" class="btn btn-primary">Explorar productos</a>
+      </div>
+    </div>
   </div>
+</div>
 </div>
 
 <style>
@@ -915,6 +1185,333 @@
   }
 
   /* ============================================
+     COUPONS & OFFERS
+     ============================================ */
+  .coupons-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .coupon-card {
+    display: flex;
+    border: 2px dashed var(--account-border);
+    border-radius: var(--account-radius);
+    overflow: hidden;
+    background: var(--account-surface);
+    transition: all var(--account-transition);
+  }
+
+  .coupon-card:hover {
+    border-color: var(--account-primary);
+    box-shadow: var(--account-shadow);
+  }
+
+  .coupon-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1.25rem;
+    background: linear-gradient(135deg, var(--account-primary), var(--account-primary-hover));
+    color: white;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .coupon-left-secondary {
+    background: linear-gradient(135deg, #10b981, #059669);
+  }
+
+  .coupon-left-accent {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  }
+
+  .coupon-discount {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .coupon-type {
+    font-size: 0.625rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+    opacity: 0.9;
+  }
+
+  .shipping-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .coupon-right {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .coupon-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--account-text);
+  }
+
+  .coupon-description {
+    font-size: 0.8125rem;
+    color: var(--account-text-muted);
+  }
+
+  .coupon-code-wrapper {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .coupon-code {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    background: var(--account-background);
+    border: 1px dashed var(--account-primary);
+    border-radius: var(--account-radius-sm);
+    font-family: monospace;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--account-primary);
+    letter-spacing: 0.025em;
+  }
+
+  .copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--account-border);
+    border-radius: var(--account-radius-sm);
+    background: var(--account-surface);
+    cursor: pointer;
+    transition: all var(--account-transition);
+    color: var(--account-text-muted);
+  }
+
+  .copy-btn:hover {
+    background: var(--account-primary);
+    border-color: var(--account-primary);
+    color: white;
+  }
+
+  .copy-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .coupon-expiry {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--account-text-light);
+    margin-top: 0.25rem;
+  }
+
+  .clock-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* Offers Section */
+  .offers-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .offers-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    white-space: nowrap;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .offers-list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .offer-item {
+    padding: 1.25rem 0;
+  }
+
+  .offer-item.offer-urgent {
+    background: linear-gradient(90deg, rgba(239, 68, 68, 0.05), transparent);
+    margin: -1.25rem -1.5rem;
+    padding: 1.25rem 1.5rem;
+    border-left: 3px solid #ef4444;
+  }
+
+  .offer-timer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--account-text-muted);
+  }
+
+  .timer-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--account-error);
+  }
+
+  .timer-label {
+    color: var(--account-text-muted);
+  }
+
+  .countdown {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    font-family: monospace;
+  }
+
+  .countdown-segment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .countdown-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--account-error);
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    min-width: 2rem;
+    text-align: center;
+  }
+
+  .countdown-unit {
+    font-size: 0.625rem;
+    color: var(--account-text-light);
+    text-transform: uppercase;
+    margin-top: 0.125rem;
+  }
+
+  .countdown-separator {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--account-error);
+    margin: 0 0.125rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .offer-date {
+    font-weight: 600;
+    color: var(--account-text);
+  }
+
+  .offer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .offer-badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 0.25rem 0.625rem;
+    background: #fef2f2;
+    color: #dc2626;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
+  }
+
+  .offer-badge-secondary {
+    background: #fef3c7;
+    color: #d97706;
+  }
+
+  .offer-badge-vip {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    color: #92400e;
+  }
+
+  .offer-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--account-text);
+    margin: 0;
+  }
+
+  .offer-description {
+    font-size: 0.875rem;
+    color: var(--account-text-muted);
+    margin: 0;
+  }
+
+  .offer-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  /* Empty State */
+  .empty-coupons {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--account-surface);
+    border: 1px solid var(--account-border);
+    border-radius: var(--account-radius);
+  }
+
+  .empty-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    color: var(--account-text-light);
+  }
+
+  .empty-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .empty-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--account-text);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .empty-description {
+    font-size: 0.875rem;
+    color: var(--account-text-muted);
+    margin: 0 0 1.5rem 0;
+  }
+
+  /* ============================================
      RESPONSIVE
      ============================================ */
   @media (max-width: 640px) {
@@ -950,6 +1547,36 @@
     .card-header,
     .card-content {
       padding: 1rem;
+    }
+
+    /* Coupon responsive */
+    .coupon-card {
+      flex-direction: column;
+    }
+
+    .coupon-left {
+      flex-direction: row;
+      gap: 0.5rem;
+      padding: 1rem;
+      min-width: auto;
+    }
+
+    .coupon-discount {
+      font-size: 1.5rem;
+    }
+
+    .offers-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .offer-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .countdown {
+      flex-wrap: wrap;
     }
   }
 </style>
@@ -1163,6 +1790,120 @@
 
     // Make showToast globally available
     window.showToast = showToast;
+
+    // ============================================
+    // COPY COUPON CODE
+    // ============================================
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    
+    copyButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.dataset.code;
+        
+        // Copy to clipboard
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(code).then(() => {
+            showToast(`Código "${code}" copiado al portapapeles`, 'success');
+            
+            // Visual feedback
+            btn.innerHTML = `
+              <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            `;
+            
+            setTimeout(() => {
+              btn.innerHTML = `
+                <svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              `;
+            }, 2000);
+          }).catch(() => {
+            fallbackCopy(code);
+          });
+        } else {
+          fallbackCopy(code);
+        }
+      });
+    });
+
+    function fallbackCopy(text) {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      
+      try {
+        document.execCommand('copy');
+        showToast(`Código "${text}" copiado al portapapeles`, 'success');
+      } catch (err) {
+        showToast('No se pudo copiar el código', 'error');
+      }
+      
+      document.body.removeChild(textarea);
+    }
+
+    // ============================================
+    // COUNTDOWN TIMERS
+    // ============================================
+    function initCountdowns() {
+      // Timer 1 - Flash Sale (2:45:30)
+      let timer1 = { hours: 2, minutes: 45, seconds: 30 };
+      updateCountdown('hours-1', 'minutes-1', 'seconds-1', timer1);
+      
+      // Timer 2 - Weekend (48:00:00)
+      let timer2 = { hours: 48, minutes: 0, seconds: 0 };
+      updateCountdown('hours-2', 'minutes-2', 'seconds-2', timer2);
+
+      // Update every second
+      setInterval(() => {
+        // Timer 1
+        timer1 = decrementTimer(timer1);
+        updateCountdown('hours-1', 'minutes-1', 'seconds-1', timer1);
+        
+        // Timer 2
+        timer2 = decrementTimer(timer2);
+        updateCountdown('hours-2', 'minutes-2', 'seconds-2', timer2);
+      }, 1000);
+    }
+
+    function decrementTimer(timer) {
+      let { hours, minutes, seconds } = timer;
+      
+      seconds--;
+      if (seconds < 0) {
+        seconds = 59;
+        minutes--;
+        if (minutes < 0) {
+          minutes = 59;
+          hours--;
+          if (hours < 0) {
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+          }
+        }
+      }
+      
+      return { hours, minutes, seconds };
+    }
+
+    function updateCountdown(hoursId, minutesId, secondsId, timer) {
+      const hoursEl = document.getElementById(hoursId);
+      const minutesEl = document.getElementById(minutesId);
+      const secondsEl = document.getElementById(secondsId);
+      
+      if (hoursEl) hoursEl.textContent = String(timer.hours).padStart(2, '0');
+      if (minutesEl) minutesEl.textContent = String(timer.minutes).padStart(2, '0');
+      if (secondsEl) secondsEl.textContent = String(timer.seconds).padStart(2, '0');
+    }
+
+    // Initialize countdowns
+    initCountdowns();
 
   })();
 </script>
